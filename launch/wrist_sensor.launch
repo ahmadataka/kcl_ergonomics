@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!-- This launch file is used to run nodes for wrist sensor measurement. -->
+  <launch>
+    <!-- These lines are used to define the initializeable arguments and parameters-->
+    <!-- There is 1 important argument described as follows-->
+    <!-- 1. Argument "human_index" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "human_index" to be "2".-->
+    <!-- Important: The argument normally does not need to be initialized since it is assigned already in launch_ergonomics.launch. -->
+      <arg name="human_index" default="1"/>
+
+      <!-- Assigning the argument "human_index" value to parameter "human" -->
+      <param name="human" value="$(arg human_index)" type="int"/>
+
+      <!-- Node to read the serial data containing the wrist sensor value -->
+      <node pkg="kcl_ergonomics" type="read_wrist.py" name="read_wrist" respawn="false" output="screen"/>
+
+      <!-- Node to broadcast the wrist frame -->
+      <node pkg="kcl_ergonomics" type="broadcast_wrist.py" name="broadcast_wrist" respawn="false" output="screen"/>
+
+      <!-- Node to convert the wrist quaternion value to euler angle -->
+      <node pkg="kcl_ergonomics" type="euler_wrist.py" name="euler_wrist" respawn="false" output="screen"/>
+  </launch>
