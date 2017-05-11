@@ -7,14 +7,18 @@
     <!-- 1. Argument "use_wrist" is set to "1" when wrist sensor is used or "0" when wrist sensor is disabled.-->
     <!-- 2. Argument "human" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "human" to be "2".-->
     <!-- 3. Argument "pedal" is set to "1" when pedal option is used.-->
+    <!-- 4. Argument "init_mode" is set to "0" for calibration.-->
       <arg name="use_wrist" default="1"/>
       <arg name="human" default="1"/>
       <arg name="pedal" default="0"/>
+      <arg name="init_mode" default="0"/>
 
       <!-- Assigning the argument "pedal" value to parameter "use_pedal" -->
       <param name="use_pedal" value="$(arg pedal)" type="int"/>
-
-
+      <!-- Assigning the argument "init_mode" value to parameter "robot_mode" -->
+      <param name="robot_mode" value="$(arg init_mode)" type="int"/>
+      <!-- Parameter used as indicator to go back to the reset mode -->
+      <param name="reset_mode" value="0" type="int"/>
       <!-- Launching file for producing human angle -->
       <include file="$(find kcl_ergonomics)/launch/launch_human.launch">
       	<arg name="index" value="$(arg human)"/>
@@ -43,10 +47,6 @@
 	       <node pkg="kcl_ergonomics" type="target_generator_pedal.py" name="target_generator" respawn="false" output="screen"/>
          <node pkg="kcl_ergonomics" type="read_pedal.py" name="read_pedal" respawn="false"/>
       </group>
-
-      <!-- This node is used to create a TF listener and publish euler angle of tip's orientation -->
-      <!-- CHECK THIS! IT MIGHT NOT BE NEEDED! -->
-      <node pkg="kcl_ergonomics" type="listen_orientation.py" name="listen_orientation" respawn="false" output="screen"/>
 
       <!-- This node is used to save the calibration data during the human calibration process -->
       <node pkg="kcl_ergonomics" type="human_calibrate.py" name="human_calibrate" respawn="false" output="screen"/>

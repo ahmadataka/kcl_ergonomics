@@ -15,7 +15,7 @@
       <node pkg="kcl_ergonomics" type="frame_listener.py" name="node_elbow_shoulder" respawn="false" output="screen">
       	<param name="frame" type="string" value="left_elbow" />
       	<param name="ref" type="string" value="left_shoulder" />
-      	<param name="publish_to" type="string" value="left_elbow_shoulder"/>
+      	<param name="publish_to" type="string" value="/fourbythree_topics/ergonomics/left_elbow_shoulder"/>
       	<param name="ind" type="int" value="$(arg index)"/>
       </node>
 
@@ -23,7 +23,7 @@
       <node pkg="kcl_ergonomics" type="frame_listener.py" name="node_hand_shoulder" respawn="false">
       	<param name="frame" type="string" value="left_hand" />
       	<param name="ref" type="string" value="left_shoulder" />
-      	<param name="publish_to" type="string" value="left_hand_shoulder"/>
+      	<param name="publish_to" type="string" value="/fourbythree_topics/ergonomics/left_hand_shoulder"/>
       	<param name="ind" type="int" value="$(arg index)"/>
       </node>
 
@@ -31,7 +31,7 @@
       <node pkg="kcl_ergonomics" type="frame_listener.py" name="node_neck_shoulder" respawn="false">
       	<param name="frame" type="string" value="neck" />
       	<param name="ref" type="string" value="left_shoulder" />
-      	<param name="publish_to" type="string" value="left_neck_shoulder"/>
+      	<param name="publish_to" type="string" value="/fourbythree_topics/ergonomics/left_neck_shoulder"/>
       	<param name="ind" type="int" value="$(arg index)"/>
       </node>
 
@@ -39,7 +39,7 @@
       <node pkg="kcl_ergonomics" type="frame_listener.py" name="node_torso_shoulder" respawn="false">
       	<param name="frame" type="string" value="torso" />
       	<param name="ref" type="string" value="left_shoulder" />
-      	<param name="publish_to" type="string" value="left_torso_shoulder"/>
+      	<param name="publish_to" type="string" value="/fourbythree_topics/ergonomics/left_torso_shoulder"/>
       	<param name="ind" type="int" value="$(arg index)"/>
       </node>
 
@@ -47,7 +47,7 @@
       <node pkg="kcl_ergonomics" type="frame_listener.py" name="node_left_right_shoulder" respawn="false">
       	<param name="frame" type="string" value="neck" />
       	<param name="ref" type="string" value="left_shoulder" />
-      	<param name="publish_to" type="string" value="left_right_shoulder"/>
+      	<param name="publish_to" type="string" value="/fourbythree_topics/ergonomics/left_right_shoulder"/>
       	<param name="ind" type="int" value="$(arg index)"/>
       </node>
 

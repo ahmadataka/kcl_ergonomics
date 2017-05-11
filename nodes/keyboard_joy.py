@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# This is used convert from keyboard input to Joy message
 import roslib
 roslib.load_manifest('kcl_ergonomics')
 import rospy
@@ -9,34 +10,39 @@ from std_msgs.msg import String
 
 class keyboard_joy(object):
   def __init__(self):
+    # Initialize the ROS Node
     rospy.init_node('keyboard_joy')
+    # Define the ROS Publisher used to send Joy message
     self.key_pub = rospy.Publisher('keyboard_msg', Joy, queue_size = 10)
-    key_sub = rospy.Subscriber('keyboard_input', String, self.get_key)
+    # Define the ROS Subscriber used to read the character from keyboard
+    key_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/keyboard_input', String, self.get_key)
+    # Set the rate to be 40 Hz
     rate = rospy.Rate(40.0)
+    # Define the String class
     self.key_read = String()
-    self.flag = 0
-    while not rospy.is_shutdown():
-	#if(self.flag == 0):
-	  #self.key_read.data = '?'
-	self.key_joy = Joy()
-	#self.transform_to_send()
 
+    while not rospy.is_shutdown():
+        # Initialize the Joy class
+        self.key_joy = Joy()
+        # Sleep until 1/40 s
         rate.sleep()
 
+  # This function is used to get the data from the keyboard
   def get_key(self,msg):
+    # Read the data
     self.key_read.data = msg.data
-    self.flag = 1
-    print(self.key_read)
+    # Prepare the data to be sent
     self.transform_to_send()
 
+  # This function is used to convert from keyboard to Joy
   def transform_to_send(self):
-    #self.key_joy.header.stamp = rospy.get_time()
-    #self.key_joy.header.frame_id = 0
+    # Initialize the axes and buttons of the Joy message
     self.key_joy.axes = []
     self.key_joy.buttons = []
     self.axes = [0, 0, 0, 0, 0, 0]
     self.buttons = [0, 0, 0, 0]
 
+    # Map from keyboard character into a Joy message
     if(self.key_read.data == 'a'):
       self.axes[0] = -1
     elif(self.key_read.data == 'd'):
@@ -82,11 +88,13 @@ class keyboard_joy(object):
     elif(self.key_read.data == 'm'):
       self.buttons[3] = 1
 
+    # Put the value into array
     for i in range(0, 6):
       self.key_joy.axes.append(self.axes[i])
     for i in range(0, 4):
       self.key_joy.buttons.append(self.buttons[i])
-    self.flag = 0
+
+    # Publish the data
     self.key_pub.publish(self.key_joy)
 
 if __name__ == '__main__':

@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
+<!-- This is the launch file used to run the nodes for keyboard input-->
   <launch>
     <node pkg="kcl_ergonomics" type="test_keyboard.py" name="read_keyboard"/>
 
     <node pkg="kcl_ergonomics" type="keyboard_joy.py" name="keyboard_joy" >
-      <remap from="keyboard_msg" to="joy"/>
+      <remap from="keyboard_msg" to="/fourbythree_topics/ergonomics/joy"/>
     </node>
   </launch>

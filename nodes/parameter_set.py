@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-# Software License Agreement (BSD License)
-#
-# Copyright (c) 2008, Willow Garage, Inc.
-# All rights reserved.
-#
-
+# The code is used to change the parameter from the keyboard input.
 
 import roslib; roslib.load_manifest('kcl_ergonomics')
 import math
@@ -15,36 +10,31 @@ from std_msgs.msg import Int32
 
 class param_from_key(object):
   def __init__(self):
+    # Initialize the ROS Node
     rospy.init_node('parameter_set')
-    self.pedal = Int32MultiArray()
-    self.stat_pub = rospy.Publisher('pedal_status', Int32MultiArray, queue_size = 10)
-    self.rec_vel = rospy.Subscriber('/joy', Joy, self.ps3_callback)
-    # self.rec_pedal = rospy.Subscriber('/pedal_signal', Int32, self.get_pedal)
-    r = rospy.Rate(40)
-    # while not rospy.is_shutdown():
-
-    # r.sleep()
-
+    # Define the ROS Subscriber to read from keyboard or joystick
+    self.rec_vel = rospy.Subscriber('/fourbythree_topics/ergonomics/joy', Joy, self.ps3_callback)
+    # Spin and wait for the subscribed data
     rospy.spin()
 
+  # Function to read the keyboard or joystick data
   def ps3_callback(self,msg):
+    # Check which keyboard / joystick key is pressed
+    # Calibration mode: human needs to stand straight and calibrate the joint angle and arm's length
+    # Reset mode: Robot goes back to initial pose
+    # Keyboard 'z'
     if(msg.axes[2]==-1):
+        # Used to exit the calibration mode and reset mode
         rospy.set_param("/robot_mode", 1)
         rospy.set_param("/reset_mode", 0)
+    # Keyboard 'x'
     elif(msg.axes[2]==1):
+        # Used to go to calibration mode
         rospy.set_param("/robot_mode", 0)
+    # Keyboard 's'
     elif(msg.axes[1]==-1):
+        # Used to go to reset mode
         rospy.set_param("/reset_mode", 1)
-    if(msg.axes[3]==1):
-        self.pedal.data = []
-        self.pedal.data.append(1)
-        self.stat_pub.publish(self.pedal)
-    else:
-        self.pedal.data = []
-        self.pedal.data.append(0)
-        self.stat_pub.publish(self.pedal)
-
-  # def get_pedal(self,msg):
 
 
 if __name__ == '__main__':
