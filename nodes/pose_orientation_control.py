@@ -31,8 +31,9 @@ class cart_control(object):
     joint_sub = rospy.Subscriber('/robot/joint_states', JointState, self.get_joint)
     pedal_sub = rospy.Subscriber('/pedal_status', Int32MultiArray, self.get_pedal)
     baxter_pose_sub = rospy.Subscriber('/baxter/pose/current', Pose, self.get_gripper)
+    euler_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/euler_gripper', Float64MultiArray, self.get_euler)
     r = rospy.Rate(1000)
-    self.kin = baxter_kinematics('left', 'wrist')
+    self.kin = baxter_kinematics('left', 'gripper')
     self.num_joint = 7
     self.kin.print_kdl_chain()
     self.q_d = JointCommand()
@@ -79,7 +80,7 @@ class cart_control(object):
     self.rot_cur = [0.641, 0.006, 0.767, 0.011]
     # self.ee_rot = [0.649, -0.001, 0.760, 0.002]
     # self.ee_rot = [0.650, 0.0290, 0.753, -0.034]
-
+    self.euler = [0.0, 0.0, 0.0]
 
     self.joint_desired = self.kin.inverse_kinematics(self.ee_pose, self.ee_rot)
     # print self.joint_desired
@@ -91,6 +92,7 @@ class cart_control(object):
     while not rospy.is_shutdown():
       #if(self.flag==1):
 	#self.joint_desired = self.kin.inverse_kinematics(self.ee_pose, self.ee_rot)
+      print self.ee_pose
       self.mode = rospy.get_param('/robot_mode')
       self.reset = rospy.get_param('/reset_mode')
       self.finish_sent.data = self.trailing_edge
@@ -148,6 +150,11 @@ class cart_control(object):
     # self.pedal_stat = vec.data[0]
     self.pedal_stat = 0
 
+  def get_euler(self,vec):
+    self.euler[0] = vec.data[0]
+    self.euler[1] = vec.data[1]
+    self.euler[2] = vec.data[2]
+
   def get_task(self,vec):
     self.task_flag_before = self.task_flag
     self.task_flag = vec.data
@@ -190,10 +197,13 @@ class cart_control(object):
     #         self.ee_pose[2] = self.ee_pose[2] + end_eff.position.z
     # else:
     if(end_eff.position.x == 0 and end_eff.position.y == 0 and end_eff.position.z == 0):
-        self.ee_rot[0] = end_eff.orientation.x
-        self.ee_rot[1] = end_eff.orientation.y
-        self.ee_rot[2] = end_eff.orientation.z
-        self.ee_rot[3] = end_eff.orientation.w
+        eul_move = tf.transformations.euler_from_quaternion(end_eff.orientation.x,end_eff.orientation.y,end_eff.orientation.z,end_eff.orientation.w)
+        eul_move = eul_move + self.euler
+        quat_target = tf.transformations.quaternion_from_euler(eul_move[0], eul_move[1], eul_move[2])
+        self.ee_rot[0] = quat_target[0]
+        self.ee_rot[1] = quat_target[1]
+        self.ee_rot[2] = quat_target[2]
+        self.ee_rot[3] = quat_target[3]
     else:
         self.ee_pose[0] = self.ee_pose[0] + end_eff.position.x
         self.ee_pose[1] = self.ee_pose[1] + end_eff.position.y

@@ -60,4 +60,6 @@
       <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
         <param name="wrist_active" type="int" value="$(arg wrist_on)" />
       </node>
+      <!-- <node pkg="kcl_baxter" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/> -->
+
   </launch>

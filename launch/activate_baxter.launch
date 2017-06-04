@@ -3,11 +3,14 @@
   <launch>
     <!-- These lines are used to define the initializeable arguments and parameters-->
     <!-- Argument "pedal" is set to "1" when pedal option is used.-->
+    <!-- Argument "jump" is set to "1" when starting from Baxter's resting position.-->
+    <!-- Argument "number" is set to "1" to show Rula Score on Baxter's screen.-->
+    <!-- Argument "control" is set to "1" to activate Baxter's control.-->
     <arg name="pedal" default="0"/>
     <arg name="jump" default="0"/>
     <arg name="number" default="1"/>
     <arg name="control" default="1"/>
-    <!-- Assigning the argument "pedal" value to parameter "use_pedal" -->
+    <!-- Assigning the arguments' value to global parameters -->
     <param name="use_pedal" value="$(arg pedal)" type="int"/>
     <param name="jump_mode" value="$(arg jump)" type="int"/>
     <param name="number_screen" value="$(arg number)" type="int"/>
@@ -30,4 +33,6 @@
 
     <!-- Used to show Rula score image in Baxter's screen-->
     <node pkg="kcl_ergonomics" type="image_screen.py" name="image_screen" respawn="false" output="screen"/>
+
+    <node name="baxter_get_kinematics" pkg="kcl_baxter" type="baxter_kinematics.py" output="screen"/>
   </launch>
