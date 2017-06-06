@@ -104,12 +104,12 @@ class human_angle_node(object):
     self.left_neck_shoulder.position.z = vec.position.z
 
   def get_torso_shoulder(self,vec):
+      def get_left_right_shoulder(self,vec):
     # This is used to receive the vector position of torso with respect to shoulder
     self.left_torso_shoulder.position.x = vec.position.x
     self.left_torso_shoulder.position.y = vec.position.y
     self.left_torso_shoulder.position.z = vec.position.z
 
-  def get_left_right_shoulder(self,vec):
     # This is used to receive the vector position of right shoulder with respect to left shoulder
     self.left_right_shoulder.position.x = vec.position.x
     self.left_right_shoulder.position.y = vec.position.y

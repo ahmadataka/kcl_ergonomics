@@ -8,10 +8,13 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   tf
+  actionlib_msgs
+  actionlib
+  fourbythree_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -129,13 +132,28 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(rula_score src/rula.cpp)
+add_executable(send_action_ergo src/send_action_ergo.cpp)
+add_executable(server_ergonomics src/server_ergonomics.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(rula_score ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(send_action_ergo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(server_ergonomics ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(rula_score
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  send_action_ergo
+  ${catkin_LIBRARIES}
+  -ljsoncpp
+)
+
+target_link_libraries(
+  server_ergonomics
   ${catkin_LIBRARIES}
 )
 

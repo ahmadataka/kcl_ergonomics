@@ -9,6 +9,9 @@
     <arg name="index" default="1"/>
     <arg name="wrist_on" default="1"/>
 
+      <!-- This node is for setting up the Kinect -->
+      <!-- Track the human movement using Kinect. Launch file openni.launch in openni_launch package needs to be running beforehand. -->
+      <!-- <node name="openni_tracker" pkg="openni_tracker" type="openni_tracker"/> -->
 
       <!-- The code frame_listener.py is used to make transformation from one frame to another. In this case, frame "left_shoulder" is used as a reference for all other frames.-->
       <!-- Transform from "left_elbow" to "left_shoulder"-->
@@ -57,9 +60,9 @@
       </node>
 
       <!-- This node is used to generate the human's joint angle from the frame information.-->
-      <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
+      <!-- <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
         <param name="wrist_active" type="int" value="$(arg wrist_on)" />
-      </node>
-      <!-- <node pkg="kcl_baxter" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/> -->
+      </node> -->
+      <node pkg="kcl_ergonomics" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/>
 
   </launch>

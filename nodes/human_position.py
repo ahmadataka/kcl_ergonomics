@@ -8,7 +8,8 @@ from geometry_msgs.msg import Pose
 from std_msgs.msg import Int32
 from std_msgs.msg import Float64MultiArray
 
-if __name__ == '__main__':
+class human_position(object):
+  def __init__(self):
     rospy.init_node('human_position')
 
     # This variable gets the human index detected by the Kinect from parameter 'ind'
@@ -29,6 +30,8 @@ if __name__ == '__main__':
     cor_save = 0.0
     sag_save = 0.0
     lower_save = 0.0
+
+    mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # There are upper arm coronal, upper arm sagital, lower arm
     # Initilize the topics producing the sign for the human angles.
@@ -52,11 +55,10 @@ if __name__ == '__main__':
     low_limit = -0.2
     high_limit3 = 0.15
     low_limit3 = -0.15
+    # Read whether the human is in calibrated state
+    self.mode = rospy.get_param('/robot_mode')
 
     while not rospy.is_shutdown():
-        # Read whether the human is in calibrated state
-        mode = rospy.get_param('/robot_mode')
-
         # Listen to the frame left_elbow
         try:
             now = rospy.Time.now()
@@ -122,7 +124,7 @@ if __name__ == '__main__':
                 lower_arm_flag.data = 1
 
             # Check whether the human is in calibrated state
-            if(mode==0):
+            if(self.mode==0):
                 # Read the current offset value
                 cor_save = diff
                 sag_save = diff2
@@ -151,3 +153,12 @@ if __name__ == '__main__':
 
         # Sleep until 1/40 s
         rate.sleep()
+
+  def get_mode(self,vec):
+      # Check whether the human is in calibration mode
+      self.mode = vec.data
+
+if __name__ == '__main__':
+    try:
+        human_position()
+    except rospy.ROSInterruptException: pass

@@ -8,7 +8,7 @@
     <!-- 2. Argument "human" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "human" to be "2".-->
     <!-- 3. Argument "pedal" is set to "1" when pedal option is used.-->
     <!-- 4. Argument "init_mode" is set to "0" for calibration.-->
-      <arg name="use_wrist" default="1"/>
+      <arg name="use_wrist" default="0"/>
       <arg name="human" default="1"/>
       <arg name="pedal" default="0"/>
       <arg name="init_mode" default="0"/>
@@ -57,6 +57,7 @@
       <!-- This node is used to check whether the robot has finished the task -->
       <!-- CHECK THIS! IT MIGHT NOT BE NEEDED! -->
       <node pkg="kcl_ergonomics" type="robot_speed_status.py" name="robot_speed_stat" respawn="false" output="screen"/>
+      <!-- <node pkg="kcl_ergonomics" type="send_action_ergo" name="send_action_ergo" respawn="false" output="screen"/> -->
 
       <!-- This is used to enable the keyboard input -->
       <include file="$(find kcl_ergonomics)/launch/keyboard_node.launch"/>
