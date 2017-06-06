@@ -117,6 +117,7 @@ class ergonomic_pose(object):
     task_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/task_finish_flag', Int32, self.get_task)
     # Used to receive the arm's length after calibration
     calib_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/arm_calibrate', Float64MultiArray, self.get_arm)
+    mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # Define the ROS Publisher
     # Used to publish the robot's target pose
@@ -125,8 +126,6 @@ class ergonomic_pose(object):
     # Set the rate to be 40 Hz
     r = rospy.Rate(40.0)
     while not rospy.is_shutdown():
-      # Check whether the human is in calibration mode
-      self.calib_mode = rospy.get_param('/robot_mode')
       # Execute the ergonomics algorithm when the human is not in calibration mode
       if(self.calib_mode == 1):
           self.full_ergo()
@@ -139,6 +138,10 @@ class ergonomic_pose(object):
 
       # Sleep until 1/40 s
       r.sleep()
+
+  def get_mode(self,vec):
+      # Check whether the human is in calibration mode
+      self.calib_mode = vec.data
 
   # Used to receive the human's joint angle
   def get_left(self,vec):
@@ -382,6 +385,7 @@ class ergonomic_pose(object):
       # Reset the flag used to move to the next correction priority
       self.increase = 0
       # Check whether the Rula score is bigger than the boundary and whether the previous movement has been finished
+      print self.task_stat
       if(self.rula>=self.rula_bound and self.task_stat == 0):
           # Check whether the previous movement has been finished
           if(self.task_stat==0):
@@ -390,6 +394,7 @@ class ergonomic_pose(object):
                 # Start the counter and set the flag to show that the counting has been started
                 self.begin = rospy.Time.now()
                 self.state_count = 1
+                print "begin"
 
               # Read the current time
               self.current = rospy.Time.now()

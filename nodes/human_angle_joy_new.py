@@ -11,10 +11,12 @@ import math
 import rospy
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float64MultiArray
+from std_msgs.msg import Int32
 
 class path_generator(object):
   def __init__(self):
     rospy.init_node('human_angle_joy')
+    self.mode = rospy.get_param('/robot_mode')
     self.left_ang = [90.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     self.right_ang = [90.0, 0.0, 0.0, 0.0]
     self.left_ang_sent = Float64MultiArray()
@@ -23,6 +25,7 @@ class path_generator(object):
     goal_pub = rospy.Publisher('/fourbythree_topics/ergonomics/left_human_angle', Float64MultiArray, queue_size = 10)
     goal2_pub = rospy.Publisher('right_human_angle', Float64MultiArray, queue_size = 10)
     calib_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/angle_calibrate', Float64MultiArray, self.get_calib)
+    mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
     r = rospy.Rate(40)
     self.delta = 10.0
     self.wrist_init = [0.0, 0.0]
@@ -31,7 +34,6 @@ class path_generator(object):
     self.gamma_init = 0.0
     self.phi_init = 0.0
     while not rospy.is_shutdown():
-        self.mode = rospy.get_param('/robot_mode')
         self.left_ang_sent.data = []
         if(self.mode == 0):
             self.left_ang_sent.data.append(self.left_ang[0])
@@ -57,6 +59,11 @@ class path_generator(object):
         r.sleep()
 
         #rospy.spin()
+
+  def get_mode(self,vec):
+      # Check whether the human is in calibration mode
+      self.mode = vec.data
+
   def get_calib(self,vec):
     self.theta_init = vec.data[0]
     self.alpha_init = vec.data[1]

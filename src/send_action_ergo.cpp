@@ -31,7 +31,7 @@ int main(int argc, char** argv)
   ros::Subscriber target_sub = n.subscribe("/fourbythree_topics/ergonomics/baxter_target", 10, get_target);
   ros::Publisher task_finish_pub = n.advertise<std_msgs::Int32>("/fourbythree_topics/ergonomics/task_finish_flag",10);
   std_msgs::Int32 task_flag;
-
+  task_flag.data = 0;
   goal.type = "ERGONOMICS";
   Client client("execute_sm_instruction", true);
   flag_action = 0;
@@ -42,10 +42,18 @@ int main(int argc, char** argv)
   {
     if(flag_action == 1)
     {
-      tf::Quaternion q(ergo_pose.orientation.x, ergo_pose.orientation.y, ergo_pose.orientation.z, ergo_pose.orientation.w);
-      tf::Matrix3x3 m(q);
       double roll, pitch, yaw;
-      m.getRPY(roll, pitch, yaw);
+
+      if(ergo_pose.orientation.x!=0 && ergo_pose.orientation.y!=0 && ergo_pose.orientation.z!=0 && ergo_pose.orientation.w!=0)
+      {
+        tf::Quaternion q(ergo_pose.orientation.x, ergo_pose.orientation.y, ergo_pose.orientation.z, ergo_pose.orientation.w);
+        tf::Matrix3x3 m(q);
+        m.getRPY(roll, pitch, yaw);
+      }
+      else
+      {
+        roll = 0; pitch = 0; yaw = 0;
+      }
 
       ergo_str["x"] = ergo_pose.position.x;
       ergo_str["y"] = ergo_pose.position.y;
@@ -59,16 +67,21 @@ int main(int argc, char** argv)
       goal.parameters = ss.str();
 
       client.sendGoal(goal);
+      task_flag.data = 1;
+      task_finish_pub.publish(task_flag);
 
-      client.waitForResult();
-      if (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+      bool finished_before_timeout = client.waitForResult(ros::Duration(5.0));
+      if (finished_before_timeout && client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
       {
         flag_action = 0;
-        task_flag.data = 1;
-        task_finish_pub.publish(task_flag);
+        task_flag.data = 0;
+      }
+      else
+      {
+        flag_action = 0;
       }
     }
-
+    task_finish_pub.publish(task_flag);
     ros::spinOnce();
   }
   return 0;

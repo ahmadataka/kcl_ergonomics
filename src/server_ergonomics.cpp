@@ -9,6 +9,7 @@ typedef actionlib::SimpleActionServer<fourbythree_msgs::ExecuteInstructionAction
 void execute(const fourbythree_msgs::ExecuteInstructionGoalConstPtr& goal, Server* as)
 {
   // Do lots of awesome groundbreaking robot stuff here
+  ros::Duration(3).sleep();
   as->setSucceeded();
   fourbythree_msgs::ExecuteInstructionGoal testing;
   testing = *goal;

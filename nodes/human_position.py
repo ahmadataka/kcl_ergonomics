@@ -82,7 +82,9 @@ class human_position(object):
             flag_3 = 1
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
-
+        print flag_1
+        print flag_2
+        print flag_3
         # Checking whether all frames have been received
         if(flag_1 == 1 and flag_2 == 1 and flag_3==1):
             # Checking the position difference in x-axis between hip and elbow to decide the sign of upper arm angle

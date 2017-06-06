@@ -56,8 +56,8 @@
 
       <!-- This node is used to check whether the robot has finished the task -->
       <!-- CHECK THIS! IT MIGHT NOT BE NEEDED! -->
-      <node pkg="kcl_ergonomics" type="robot_speed_status.py" name="robot_speed_stat" respawn="false" output="screen"/>
-      <!-- <node pkg="kcl_ergonomics" type="send_action_ergo" name="send_action_ergo" respawn="false" output="screen"/> -->
+      <!-- <node pkg="kcl_ergonomics" type="robot_speed_status.py" name="robot_speed_stat" respawn="false" output="screen"/> -->
+      <node pkg="kcl_ergonomics" type="send_action_ergo" name="send_action_ergo" respawn="false" output="screen"/>
 
       <!-- This is used to enable the keyboard input -->
       <include file="$(find kcl_ergonomics)/launch/keyboard_node.launch"/>

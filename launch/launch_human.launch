@@ -60,9 +60,9 @@
       </node>
 
       <!-- This node is used to generate the human's joint angle from the frame information.-->
-      <!-- <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
+      <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
         <param name="wrist_active" type="int" value="$(arg wrist_on)" />
-      </node> -->
-      <node pkg="kcl_ergonomics" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/>
+      </node>
+      <!-- <node pkg="kcl_ergonomics" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/> -->
 
   </launch>

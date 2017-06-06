@@ -55,6 +55,7 @@ class human_angle_node(object):
     left_neck_shoulder_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_neck_shoulder', Pose, self.get_neck_shoulder)
     left_torso_shou_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_torso_shoulder', Pose, self.get_torso_shoulder)
     left_right_shou_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_right_shoulder', Pose, self.get_left_right_shoulder)
+    mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # Subscribe to wrist sensor
     wrist_sub = rospy.Subscriber('wrist_euler', Float64MultiArray, self.get_wrist)
@@ -85,6 +86,10 @@ class human_angle_node(object):
       # Sleep until 1/40 s
       r.sleep()
 
+  def get_mode(self,vec):
+      # Check whether the human is in calibration mode
+      self.mode = vec.data
+
   def get_hand_elbow(self,vec):
     # This is used to receive the vector position of hand with respect to shoulder
     self.left_hand_shoulder.position.x = vec.position.x
@@ -104,12 +109,12 @@ class human_angle_node(object):
     self.left_neck_shoulder.position.z = vec.position.z
 
   def get_torso_shoulder(self,vec):
-      def get_left_right_shoulder(self,vec):
     # This is used to receive the vector position of torso with respect to shoulder
     self.left_torso_shoulder.position.x = vec.position.x
     self.left_torso_shoulder.position.y = vec.position.y
     self.left_torso_shoulder.position.z = vec.position.z
 
+  def get_left_right_shoulder(self,vec):
     # This is used to receive the vector position of right shoulder with respect to left shoulder
     self.left_right_shoulder.position.x = vec.position.x
     self.left_right_shoulder.position.y = vec.position.y
@@ -117,9 +122,6 @@ class human_angle_node(object):
 
   def get_wrist(self,vec):
     # This function is used to receive the wrist angle value
-
-    # This is used to detect whether the human is in calibrated state
-    self.mode = rospy.get_param('/robot_mode')
 
     # Executed when the wrist sensor is used
     if(self.wrist_on==1):
@@ -223,8 +225,6 @@ class human_angle_node(object):
     self.left_arm.data = []
     self.left_arm.data.append(self.a)
     self.left_arm.data.append(self.b)
-    # Check whether the human is in calibrated mode
-    self.mode = rospy.get_param('/robot_mode')
 
     # Empty the array for human's joint angle
     self.left_angle.data = []
