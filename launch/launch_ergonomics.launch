@@ -27,6 +27,7 @@
       <include file="$(find kcl_ergonomics)/launch/launch_human.launch">
       	<arg name="index" value="$(arg human)"/>
         <arg name="wrist_on" value="$(arg use_wrist)"/>
+        <arg name="robot_type" value="$(arg fourbythree)"/>
       </include>
 
       <!-- If wrist sensor is available, this launch file is used to run the wrist sensor nodes. -->

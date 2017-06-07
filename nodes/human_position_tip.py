@@ -62,7 +62,7 @@ class human_position(object):
         # Listen to the frame left_elbow
         try:
             now = rospy.Time.now()
-            (trans,rot) = listener.lookupTransform('openni_link', 'left_elbow_'+str(index), rospy.Time(0))
+            (trans,rot) = listener.lookupTransform('flange', 'left_elbow_'+str(index), rospy.Time(0))
             flag_1 = 1
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
@@ -70,7 +70,7 @@ class human_position(object):
         # Listen to the frame left_hip
         try:
             now = rospy.Time.now()
-            (trans2,rot2) = listener.lookupTransform('openni_link', 'left_hip_'+str(index), rospy.Time(0))
+            (trans2,rot2) = listener.lookupTransform('flange', 'left_hip_'+str(index), rospy.Time(0))
             flag_2 = 1
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
@@ -78,15 +78,15 @@ class human_position(object):
         # Listen to the frame left_hand
         try:
             now = rospy.Time.now()
-            (trans3,rot3) = listener.lookupTransform('openni_link', 'left_hand_'+str(index), rospy.Time(0))
+            (trans3,rot3) = listener.lookupTransform('flange', 'left_hand_'+str(index), rospy.Time(0))
             flag_3 = 1
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
 
         # Checking whether all frames have been received
         if(flag_1 == 1 and flag_2 == 1 and flag_3==1):
-            # Checking the position difference in x-axis between hip and elbow to decide the sign of upper arm angle
-            diff = trans[0] - trans2[0] - cor_calib
+            # Checking the position difference in y-axis between hip and elbow to decide the sign of upper arm angle
+            diff = trans[1] - trans2[1] - cor_calib
 
             # When the difference is higher than high limit, assign -1 as a sign
             if(diff>high_limit):
@@ -99,8 +99,8 @@ class human_position(object):
                 upper_arm_flag.data = 1
 
 
-            # Checking the position difference in y-axis between hip and elbow to decide the sign of upper arm sagital angle
-            diff2 = trans[1] - trans2[1] - sag_calib
+            # Checking the position difference in z-axis between hip and elbow to decide the sign of upper arm sagital angle
+            diff2 = trans[2] - trans2[2] - sag_calib
 
             # When the difference is positive, assign -1 as a sign
             if(diff2>0):
@@ -110,8 +110,8 @@ class human_position(object):
                 upper_arm_sagflag.data = 1
 
 
-            # Checking the position difference in x-axis between hand and elbow to decide the sign of lower arm angle
-            diff3 = trans3[0] - trans[0] - lower_calib
+            # Checking the position difference in y-axis between hand and elbow to decide the sign of lower arm angle
+            diff3 = trans3[1] - trans[1] - lower_calib
 
             # When the difference is higher than high limit, assign 1 as a sign
             if(diff3>high_limit3):
