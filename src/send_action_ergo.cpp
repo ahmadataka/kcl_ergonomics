@@ -15,6 +15,7 @@ typedef actionlib::SimpleActionClient<fourbythree_msgs::ExecuteInstructionAction
 fourbythree_msgs::ExecuteInstructionGoal goal;
 Json::Value ergo_str;
 unsigned char flag_action;
+int fourbythree;
 // This function is used to get the stiffness vector
 void get_target(const geometry_msgs::Pose::ConstPtr& msg)
 {
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "send_action_ergo");
   ros::NodeHandle n;
-
+  n.param("fourbythree_robot", fourbythree, fourbythree);
   // Used to get the stiffness vector
   ros::Subscriber target_sub = n.subscribe("/fourbythree_topics/ergonomics/baxter_target", 10, get_target);
   ros::Publisher task_finish_pub = n.advertise<std_msgs::Int32>("/fourbythree_topics/ergonomics/task_finish_flag",10);
@@ -54,13 +55,24 @@ int main(int argc, char** argv)
       {
         roll = 0; pitch = 0; yaw = 0;
       }
-
-      ergo_str["x"] = ergo_pose.position.x;
-      ergo_str["y"] = ergo_pose.position.y;
-      ergo_str["z"] = ergo_pose.position.z;
-      ergo_str["roll"] = roll;
-      ergo_str["pitch"] = pitch;
-      ergo_str["yaw"] = yaw;
+      if(fourbythree == 0)
+      {
+        ergo_str["x"] = ergo_pose.position.x;
+        ergo_str["y"] = ergo_pose.position.y;
+        ergo_str["z"] = ergo_pose.position.z;
+        ergo_str["roll"] = roll;
+        ergo_str["pitch"] = pitch;
+        ergo_str["yaw"] = yaw;
+      }
+      else
+      {
+        ergo_str["x"] = ergo_pose.position.z;
+        ergo_str["y"] = -ergo_pose.position.y;
+        ergo_str["z"] = ergo_pose.position.x;
+        ergo_str["roll"] = roll;
+        ergo_str["pitch"] = pitch;
+        ergo_str["yaw"] = yaw;
+      }
 
       std::stringstream ss;
       ss << ergo_str;
@@ -70,15 +82,11 @@ int main(int argc, char** argv)
       task_flag.data = 1;
       task_finish_pub.publish(task_flag);
 
-      bool finished_before_timeout = client.waitForResult(ros::Duration(5.0));
-      if (finished_before_timeout && client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+      client.waitForResult();
+      if (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
       {
         flag_action = 0;
         task_flag.data = 0;
-      }
-      else
-      {
-        flag_action = 0;
       }
     }
     task_finish_pub.publish(task_flag);
