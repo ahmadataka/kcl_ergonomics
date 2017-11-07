@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # This is used convert from keyboard input to Joy message
+# Created by King's College London and Queen Mary University of London, 2017.
 import roslib
 roslib.load_manifest('kcl_ergonomics')
 import rospy

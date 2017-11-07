@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # The code is used to publish to a topic consisting the pose of a target frame with respect to a reference frame
+# Created by King's College London and Queen Mary University of London, 2017.
 import roslib
 roslib.load_manifest('kcl_ergonomics')
 import rospy

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # The code is used to generate a sign for the human's joint angle.
+# Created by King's College London and Queen Mary University of London, 2017.
 import roslib
 roslib.load_manifest('kcl_ergonomics')
 import rospy
@@ -31,6 +32,7 @@ class human_position(object):
     sag_save = 0.0
     lower_save = 0.0
 
+    # Used to get the state of the calibration mode from a ROS Topic
     mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # There are upper arm coronal, upper arm sagital, lower arm

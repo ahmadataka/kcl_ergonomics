@@ -1,4 +1,5 @@
 // The code is used to produce the Rula Score from the human's joint angle.
+// Created by King's College London and Queen Mary University of London, 2017.
 
 #include "ros/ros.h"
 #include "std_msgs/Float64MultiArray.h"

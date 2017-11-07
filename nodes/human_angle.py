@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # The code is used to generate the human's joint angle.
-
+# Created by King's College London and Queen Mary University of London, 2017.
 import roslib; roslib.load_manifest('kcl_ergonomics')
 import math
 import rospy
@@ -55,6 +55,7 @@ class human_angle_node(object):
     left_neck_shoulder_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_neck_shoulder', Pose, self.get_neck_shoulder)
     left_torso_shou_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_torso_shoulder', Pose, self.get_torso_shoulder)
     left_right_shou_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/left_right_shoulder', Pose, self.get_left_right_shoulder)
+    # Used to get the state of the calibration mode from a ROS Topic
     mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # Subscribe to wrist sensor

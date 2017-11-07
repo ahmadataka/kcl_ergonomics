@@ -1,19 +1,13 @@
 <?xml version="1.0"?>
+<!-- Created by King's College London and Queen Mary University of London, 2017.-->
 <!-- This launch file is used to produce human joint angle -->
   <launch>
     <!-- These lines are used to define the initializeable arguments and parameters-->
-    <!-- There are several important arguments described as follows-->
-    <!-- 1. Argument "wrist_on" is set to "1" when wrist sensor is used or "0" when wrist sensor is disabled.-->
-    <!-- 2. Argument "index" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "index" to be "2".-->
-    <!-- 3. Argument "robot_type" is set to 1 if we use 4x3 arm and set to 0 if we use Baxter.-->
-    <!-- Important: These 3 arguments normally do not need to be initialized since they are assigned already in launch_ergonomics.launch. -->
+    <!-- Argument "wrist_on" is set to "1" when wrist sensor is used or "0" when wrist sensor is disabled.-->
+    <!-- Argument "index" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "index" to be "2".-->
+    <!-- Important: These arguments normally do not need to be initialized since they are assigned already in launch_ergonomics.launch. -->
     <arg name="index" default="1"/>
     <arg name="wrist_on" default="1"/>
-    <arg name="robot_type" default="1"/>
-
-      <!-- This node is for setting up the Kinect -->
-      <!-- Track the human movement using Kinect. Launch file openni.launch in openni_launch package needs to be running beforehand. -->
-      <!-- <node name="openni_tracker" pkg="openni_tracker" type="openni_tracker"/> -->
 
       <!-- The code frame_listener.py is used to make transformation from one frame to another. In this case, frame "left_shoulder" is used as a reference for all other frames.-->
       <!-- Transform from "left_elbow" to "left_shoulder"-->
@@ -58,22 +52,15 @@
 
       <!-- This node is used to generate a sign for the human's joint angle for 4x3 arm.-->
       <!-- The camera can be put anywhere as long as the camera position with respect to the robot is broadcasted via TF. -->
-      <group if="$(arg robot_type)">
-        <node pkg="kcl_ergonomics" type="human_position_tip.py" name="human_position" respawn="false" output="screen">
-          <param name="ind" type="int" value="$(arg index)"/>
-        </node>
-      </group>
-      <!-- This node is used to generate a sign for the human's joint angle for Baxter. The camera NEEDS TO BE PUT IN THE RIGHT SIDE OF THE HUMAN.-->
-      <group unless="$(arg robot_type)">
-        <node pkg="kcl_ergonomics" type="human_position.py" name="human_position" respawn="false" output="screen">
-          <param name="ind" type="int" value="$(arg index)"/>
-        </node>
-      </group>
+      <node pkg="kcl_ergonomics" type="human_position_tip.py" name="human_position" respawn="false" output="screen">
+        <param name="ind" type="int" value="$(arg index)"/>
+      </node>
 
       <!-- This node is used to generate the human's joint angle from the frame information.-->
       <node pkg="kcl_ergonomics" type="human_angle.py" name="human_angle" output="screen">
         <param name="wrist_active" type="int" value="$(arg wrist_on)" />
       </node>
-      <!-- <node pkg="kcl_ergonomics" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/> -->
 
+      <!-- This node is used for testing only -->
+      <!-- <node pkg="kcl_ergonomics" type="human_angle_joy_new.py" name="human_angle" respawn="false" output="screen"/> -->
   </launch>

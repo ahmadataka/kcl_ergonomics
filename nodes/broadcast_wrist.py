@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # The code is used to broadcast 2 wrist sensor into TF frames .
+# Created by King's College London and Queen Mary University of London, 2017.
 
 import roslib; roslib.load_manifest('kcl_ergonomics')
 import rospy

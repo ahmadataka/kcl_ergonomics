@@ -1,33 +1,24 @@
 <?xml version="1.0"?>
 <!-- This is the main launch file used to run all the nodes for ergonomics-based programming by demonstration.-->
+<!-- Created by King's College London and Queen Mary University of London, 2017.-->
   <launch>
 
     <!-- These lines are used to define the initializeable arguments and parameters-->
-    <!-- There are several important arguments described as follows-->
-    <!-- 1. Argument "use_wrist" is set to "1" when wrist sensor is used or "0" when wrist sensor is disabled.-->
-    <!-- 2. Argument "human" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "human" to be "2".-->
-    <!-- 3. Argument "pedal" is set to "1" when pedal option is used.-->
-    <!-- 4. Argument "init_mode" is set to "0" for calibration.-->
-    <!-- 5. Argument "fourbythree" is set to "1" when we use fourbythree robot frame.-->
+    <!-- Argument "use_wrist" is set to "1" when wrist sensor is used or "0" when wrist sensor is disabled.-->
+    <!-- Argument "human" is set to the human index selected in the Kinect nodes. For example, if the Kinect detecst the human's elbow as "left_human_2", then we set argument "human" to be "2".-->
+    <!-- Argument "init_mode" is set to "0" for calibration.-->
       <arg name="use_wrist" default="0"/>
       <arg name="human" default="1"/>
-      <arg name="pedal" default="0"/>
       <arg name="init_mode" default="0"/>
-      <arg name="fourbythree" default="1"/>
 
-      <!-- Assigning the argument "pedal" value to parameter "use_pedal" -->
-      <param name="use_pedal" value="$(arg pedal)" type="int"/>
       <!-- Assigning the argument "init_mode" value to parameter "robot_mode" -->
       <param name="robot_mode" value="$(arg init_mode)" type="int"/>
       <!-- Parameter used as indicator to go back to the reset mode -->
       <param name="reset_mode" value="0" type="int"/>
-      <!-- Parameter used as indicator whether using Baxter or fourbythree robots -->
-      <param name="fourbythree_robot" value="$(arg fourbythree)" type="int"/>
       <!-- Launching file for producing human angle -->
       <include file="$(find kcl_ergonomics)/launch/launch_human.launch">
       	<arg name="index" value="$(arg human)"/>
         <arg name="wrist_on" value="$(arg use_wrist)"/>
-        <arg name="robot_type" value="$(arg fourbythree)"/>
       </include>
 
       <!-- If wrist sensor is available, this launch file is used to run the wrist sensor nodes. -->
@@ -40,18 +31,8 @@
       <!-- This node is used to publish rula score from the human's joint angles -->
       <node pkg="kcl_ergonomics" type="rula_score" name="rula" respawn="false" output="screen"/>
 
-      <!-- These nodes are run when the pedal is not used -->
-      <group unless="$(arg pedal)">
-        <!-- This node is used to generate the target position for the robot's tip -->
-         <node pkg="kcl_ergonomics" type="target_generator.py" name="target_generator" respawn="false" output="screen"/>
-      </group>
-
-      <!-- These nodes are run when the pedal is used -->
-      <group if="$(arg pedal)">
-        <!-- This node is used to generate the target position for the robot's tip -->
-	       <node pkg="kcl_ergonomics" type="target_generator_pedal.py" name="target_generator" respawn="false" output="screen"/>
-         <node pkg="kcl_ergonomics" type="read_pedal.py" name="read_pedal" respawn="false"/>
-      </group>
+      <!-- This node is used to generate the target position for the robot's tip -->
+      <node pkg="kcl_ergonomics" type="target_generator.py" name="target_generator" respawn="false" output="screen"/>
 
       <!-- This node is used to save the calibration data during the human calibration process -->
       <node pkg="kcl_ergonomics" type="human_calibrate.py" name="human_calibrate" respawn="false" output="screen"/>
@@ -60,8 +41,6 @@
       <node pkg="kcl_ergonomics" type="parameter_set.py" name="parameter_set" respawn="false" output="screen"/>
 
       <!-- This node is used to check whether the robot has finished the task -->
-      <!-- CHECK THIS! IT MIGHT NOT BE NEEDED! -->
-      <!-- <node pkg="kcl_ergonomics" type="robot_speed_status.py" name="robot_speed_stat" respawn="false" output="screen"/> -->
       <node pkg="kcl_ergonomics" type="send_action_ergo" name="send_action_ergo" respawn="false" output="screen"/>
 
       <!-- This is used to enable the keyboard input -->

@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
+<!-- Created by King's College London and Queen Mary University of London, 2017.-->
 <!-- This is the launch file used to run the nodes for keyboard input-->
   <launch>
+    <!-- This node is used to read input from keyboard -->
     <node pkg="kcl_ergonomics" type="test_keyboard.py" name="read_keyboard"/>
 
+    <!-- This node is used to transform the keyboard input into joystick format -->
     <node pkg="kcl_ergonomics" type="keyboard_joy.py" name="keyboard_joy" >
       <remap from="keyboard_msg" to="/fourbythree_topics/ergonomics/joy"/>
     </node>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # This code is used to generate the new target position and orientation for the Robot based on the human ergonomic score
-
+# Created by King's College London and Queen Mary University of London, 2017.
 
 import roslib; roslib.load_manifest('kcl_ergonomics')
 import math
@@ -117,6 +117,7 @@ class ergonomic_pose(object):
     task_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/task_finish_flag', Int32, self.get_task)
     # Used to receive the arm's length after calibration
     calib_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/arm_calibrate', Float64MultiArray, self.get_arm)
+    # Used to get the state of the calibration mode from a ROS Topic
     mode_sub = rospy.Subscriber('/fourbythree_topics/ergonomics/robot_mode', Int32, self.get_mode)
 
     # Define the ROS Publisher
@@ -139,6 +140,7 @@ class ergonomic_pose(object):
       # Sleep until 1/40 s
       r.sleep()
 
+  # Used to get the state of the calibration mode from a ROS Topic
   def get_mode(self,vec):
       # Check whether the human is in calibration mode
       self.calib_mode = vec.data

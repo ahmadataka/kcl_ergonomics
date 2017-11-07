@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # The code is used to read the wrist's quarternion data from the Serial.
+# Created by King's College London and Queen Mary University of London, 2017.
 
 import roslib; roslib.load_manifest('kcl_ergonomics')
 import math
